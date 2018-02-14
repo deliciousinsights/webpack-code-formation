@@ -1,0 +1,87 @@
+{
+  "name": "webpack-first-steps-v4",
+  "private": true,
+  "version": "1.1.0",
+  "description": "First Steps demo app for Webpack training, based on Webpack 4.x",
+  "author": "Christophe Porteneuve <christophe@delicious-insights.com> (https://delicious-insights.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.6.2",
+    "@gfx/zopfli": "^1.0.14",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "compression-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.4",
+    "core-js": "^3.2.1",
+    "cross-env": "^6.0.3",
+    "css-loader": "^3.2.0",
+    "error-overlay-webpack-plugin": "^0.4.1",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-loader": "^3.0.2",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "file-loader": "^2.0.0",
+    "hard-source-webpack-plugin": "^0.12.0",
+    "html-webpack-inline-source-plugin": "0.0.10",
+    "html-webpack-plugin": "^3.2.0",
+    "image-webpack-loader": "^6.0.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "node-sass": "^4.12.0",
+    "nodemon": "^1.19.3",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.18.2",
+    "regenerator-runtime": "^0.13.3",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "svg-url-loader": "^3.0.2",
+    "terser-webpack-plugin": "^2.1.2",
+    "url-loader": "^2.2.0",
+    "webpack": "^4.41.0",
+    "webpack-assets-manifest": "^3.1.1",
+    "webpack-cli": "^3.3.9",
+    "webpack-dashboard": "^3.2.0",
+    "webpack-dev-server": "^3.8.2",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.6.0",
+    "moment": "^2.24.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "standard",
+      "prettier",
+      "plugin:import/errors"
+    ],
+    "plugins": [
+      "import"
+    ],
+    "parser": "babel-eslint",
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "rules": {
+      "no-irregular-whitespace": 0
+    }
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "jsxSingleQuote": true,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  }
+}
