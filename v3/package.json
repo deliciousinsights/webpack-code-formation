@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.1.0",
   "description": "First Steps demo app for Webpack training, based on Webpack 3.x",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack --watch"
+  },
   "author": "Christophe Porteneuve <christophe@delicious-insights.com> (https://delicious-insights.com/)",
   "license": "MIT",
   "devDependencies": {
