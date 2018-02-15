@@ -61,5 +61,37 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "moment": "^2.24.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "standard",
+      "prettier",
+      "plugin:import/errors"
+    ],
+    "plugins": [
+      "prettier",
+      "import"
+    ],
+    "parser": "babel-eslint",
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "arrowParens": "always",
+          "jsxSingleQuote": true,
+          "semi": false,
+          "singleQuote": true,
+          "trailingComma": "es5"
+        }
+      ],
+      "no-irregular-whitespace": 0
+    }
   }
 }
