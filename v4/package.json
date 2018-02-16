@@ -4,8 +4,8 @@
   "version": "1.2.0",
   "description": "First Steps demo app for Webpack training, based on Webpack 4.x",
   "scripts": {
-    "build": "webpack --mode=production",
-    "start": "webpack --mode=development --watch"
+    "build": "cross-env NODE_ENV=production webpack",
+    "start": "webpack --watch"
   },
   "author": "Christophe Porteneuve <christophe@delicious-insights.com> (https://delicious-insights.com/)",
   "license": "MIT",
