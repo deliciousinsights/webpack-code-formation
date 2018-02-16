@@ -14,9 +14,7 @@ const coreConfig = merge(
       devtoolModuleFilenameTemplate: 'webpack:///[resource-path]',
       filename: 'main.js',
       path: PATHS.build,
-      // Because file:// usage for now, so image URLs get b0rked otherwise…
-      // (Always a good idea anyhow, esp. over HTTP).
-      publicPath: PATHS.build + '/',
+      publicPath: '/',
     },
   },
   parts.generateSourceMaps(),
@@ -29,6 +27,7 @@ const coreConfig = merge(
 const devConfig = () =>
   merge.smart(
     coreConfig,
+    parts.devServer({ port: 3003 }),
     parts.loadCSS({ modules: true }),
     parts.loadSASS({ modules: true })
   )

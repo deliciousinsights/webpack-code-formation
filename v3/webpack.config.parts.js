@@ -1,4 +1,5 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const webpack = require('webpack')
 
 // Babel
 // -----
@@ -120,6 +121,52 @@ exports.loadImages = ({ include, exclude, ieSafeSVGs = true } = {}) => ({
 
 // Dev UX
 // ------
+
+exports.devServer = ({
+  contentBase,
+  hot = true,
+  https,
+  open,
+  poll = process.env.POLL,
+  port,
+  proxy,
+} = {}) => {
+  const devServer = {
+    contentBase,
+    historyApiFallback: true,
+    https,
+    noInfo: true,
+    overlay: true,
+    port,
+    proxy,
+  }
+
+  const plugins = []
+  if (hot) {
+    plugins.push(
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NamedModulesPlugin()
+    )
+  }
+
+  if (hot === 'only') {
+    devServer.hotOnly = true
+  } else {
+    devServer.hot = !!hot
+  }
+
+  if (poll !== undefined) {
+    devServer.watchOptions = { poll: !!poll }
+  }
+
+  if (typeof open === 'string') {
+    devServer.openPage = open
+  } else {
+    devServer.open = !!open
+  }
+
+  return { devServer, plugins }
+}
 
 exports.generateSourceMaps = ({ type = 'cheap-module-source-map' } = {}) => ({
   devtool: type,

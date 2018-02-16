@@ -123,6 +123,72 @@ exports.loadImages = ({ include, exclude, ieSafeSVGs = true } = {}) => ({
 // Dev UX
 // ------
 
+exports.devServer = ({
+  contentBase,
+  hot = true,
+  https,
+  logListening = true,
+  open,
+  poll = process.env.POLL,
+  port,
+  proxy,
+} = {}) => {
+  const devServer = {
+    contentBase,
+    historyApiFallback: true,
+    https,
+    noInfo: true,
+    overlay: true,
+    port,
+    proxy,
+  }
+
+  if (logListening) {
+    devServer.onListening = () => {
+      console.log(
+        `Webpack Dev Server listening on ${
+          https ? 'https' : 'http'
+        }://localhost:${port}/`
+      )
+    }
+  }
+
+  if (hot === 'only') {
+    devServer.hotOnly = true
+  } else {
+    devServer.hot = !!hot
+  }
+
+  if (poll !== undefined) {
+    devServer.watchOptions = { poll: !!poll }
+  }
+
+  if (typeof open === 'string') {
+    devServer.openPage = open
+  } else {
+    devServer.open = !!open
+  }
+
+  return { devServer }
+}
+
+exports.errorOverlay = () => {
+  const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
+  const path = require('path')
+
+  return {
+    // eval-based source maps can't work with this overlay
+    devtool: 'cheap-module-source-map',
+    // We need absolute filenames for proper click-to-open-editor behavior
+    output: {
+      devtoolModuleFilenameTemplate(info) {
+        return path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')
+      },
+    },
+    plugins: [new ErrorOverlayPlugin()],
+  }
+}
+
 exports.generateSourceMaps = ({ type = 'cheap-module-source-map' } = {}) => ({
   devtool: type,
 })
