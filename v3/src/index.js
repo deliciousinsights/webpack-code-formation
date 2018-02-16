@@ -20,3 +20,13 @@ document.body.insertAdjacentHTML(
     <p><img src="${chillingURL}"/></p>
   `
 )
+
+const clock = setInterval(
+  () => console.log(new Date().toLocaleString('fr')),
+  1000
+)
+
+if (module.hot) {
+  module.hot.accept()
+  module.hot.dispose(() => clearInterval(clock))
+}
