@@ -39,6 +39,14 @@ module.exports = {
         use: [
           { loader: 'style-loader' },
           { loader: 'css-loader', options: { sourceMap: true } },
+          {
+            ident: 'postcss',
+            loader: 'postcss-loader',
+            options: {
+              plugins: (loader) => [require('postcss-preset-env')()],
+              sourceMap: true,
+            },
+          },
         ],
       },
       {
@@ -46,6 +54,14 @@ module.exports = {
         use: [
           { loader: 'style-loader' },
           { loader: 'css-loader', options: { sourceMap: true } },
+          {
+            ident: 'postcss',
+            loader: 'postcss-loader',
+            options: {
+              plugins: (loader) => [require('postcss-preset-env')()],
+              sourceMap: true,
+            },
+          },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
       },

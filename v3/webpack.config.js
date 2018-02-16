@@ -35,14 +35,36 @@ module.exports = {
         test: /\.css$/,
         use: [
           { loader: 'style-loader', options: { sourceMap: true } },
-          { loader: 'css-loader', options: { sourceMap: true } },
+          {
+            loader: 'css-loader',
+            options: { importLoaders: 1, sourceMap: true },
+          },
+          {
+            ident: 'postcss',
+            loader: 'postcss-loader',
+            options: {
+              plugins: (loader) => [require('postcss-cssnext')()],
+              sourceMap: true,
+            },
+          },
         ],
       },
       {
         test: /\.scss$/,
         use: [
           { loader: 'style-loader', options: { sourceMap: true } },
-          { loader: 'css-loader', options: { sourceMap: true } },
+          {
+            loader: 'css-loader',
+            options: { importLoaders: 1, sourceMap: true },
+          },
+          {
+            ident: 'postcss',
+            loader: 'postcss-loader',
+            options: {
+              plugins: (loader) => [require('postcss-cssnext')()],
+              sourceMap: true,
+            },
+          },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
       },
