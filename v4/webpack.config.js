@@ -28,7 +28,16 @@ const devConfig = () =>
   merge.smart(
     coreConfig,
     { mode: 'development' },
-    parts.devServer({ port: 3004 }),
+    parts.devServer({
+      port: 3004,
+      proxy: {
+        '/api': {
+          target: 'https://jsonplaceholder.typicode.com',
+          pathRewrite: { '^/api': '' },
+          changeOrigin: true,
+        },
+      },
+    }),
     parts.errorOverlay(),
     parts.loadCSS({ modules: true }),
     parts.loadSASS({ modules: true })

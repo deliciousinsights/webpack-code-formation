@@ -27,7 +27,16 @@ const coreConfig = merge(
 const devConfig = () =>
   merge.smart(
     coreConfig,
-    parts.devServer({ port: 3003 }),
+    parts.devServer({
+      port: 3003,
+      proxy: {
+        '/api': {
+          target: 'https://jsonplaceholder.typicode.com',
+          pathRewrite: { '^/api': '' },
+          changeOrigin: true,
+        },
+      },
+    }),
     parts.loadCSS({ modules: true }),
     parts.loadSASS({ modules: true })
   )
