@@ -119,8 +119,33 @@ exports.loadImages = ({ include, exclude, ieSafeSVGs = true } = {}) => ({
   },
 })
 
+exports.html = (options = {}) => {
+  options = {
+    ...options,
+    meta: {
+      viewport: 'width=device-width, initial-scale=1',
+      ...options.meta,
+    },
+  }
+
+  const HtmlWebpackPlugin = require('html-webpack-plugin')
+  return { plugins: [new HtmlWebpackPlugin(options)] }
+}
+
+exports.copyStatic = (...sourceDirs) => {
+  const CopyPlugin = require('copy-webpack-plugin')
+  return {
+    plugins: [new CopyPlugin(sourceDirs)],
+  }
+}
+
 // Dev UX
 // ------
+
+exports.dashboard = (options) => {
+  const WebpackDashboardPlugin = require('webpack-dashboard/plugin')
+  return { plugins: [new WebpackDashboardPlugin(options)] }
+}
 
 exports.devServer = ({
   contentBase,
@@ -170,6 +195,10 @@ exports.devServer = ({
 
 exports.generateSourceMaps = ({ type = 'cheap-module-source-map' } = {}) => ({
   devtool: type,
+})
+
+exports.safeAssets = () => ({
+  plugins: [new webpack.NoEmitOnErrorsPlugin()],
 })
 
 // Helper functions

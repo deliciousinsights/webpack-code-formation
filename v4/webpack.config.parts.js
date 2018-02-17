@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const webpack = require('webpack')
 
 // Babel
 // -----
@@ -120,8 +121,26 @@ exports.loadImages = ({ include, exclude, ieSafeSVGs = true } = {}) => ({
   },
 })
 
+exports.html = (options = {}) => {
+  options = { ...options, inject: 'head', scriptLoading: 'defer' }
+  const HtmlWebpackPlugin = require('html-webpack-plugin')
+  return { plugins: [new HtmlWebpackPlugin(options)] }
+}
+
+exports.copyStatic = (...patterns) => {
+  const CopyPlugin = require('copy-webpack-plugin')
+  return {
+    plugins: [new CopyPlugin({ patterns })],
+  }
+}
+
 // Dev UX
 // ------
+
+exports.dashboard = (options) => {
+  const WebpackDashboardPlugin = require('webpack-dashboard/plugin')
+  return { plugins: [new WebpackDashboardPlugin(options)] }
+}
 
 exports.devServer = ({
   contentBase,
@@ -191,6 +210,10 @@ exports.errorOverlay = () => {
 
 exports.generateSourceMaps = ({ type = 'cheap-module-source-map' } = {}) => ({
   devtool: type,
+})
+
+exports.safeAssets = () => ({
+  plugins: [new webpack.NoEmitOnErrorsPlugin()],
 })
 
 // Helper functions

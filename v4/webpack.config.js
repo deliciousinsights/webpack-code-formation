@@ -5,6 +5,7 @@ const Path = require('path')
 const PATHS = {
   build: Path.resolve(__dirname, 'dist'),
   source: Path.resolve(__dirname, 'src'),
+  static: Path.resolve(__dirname, 'static'),
 }
 
 const coreConfig = merge(
@@ -20,8 +21,11 @@ const coreConfig = merge(
   parts.generateSourceMaps(),
   parts.babelize({ include: PATHS.source }),
   parts.lintJS({ include: PATHS.source }),
+  parts.copyStatic(PATHS.static),
   parts.loadImages(),
-  parts.loadFonts()
+  parts.loadFonts(),
+  parts.html({ title: 'Webpack 4 - Premiers Pas' }),
+  parts.safeAssets()
 )
 
 const devConfig = () =>
@@ -39,6 +43,7 @@ const devConfig = () =>
       },
     }),
     parts.errorOverlay(),
+    parts.dashboard(),
     parts.loadCSS({ modules: true }),
     parts.loadSASS({ modules: true })
   )

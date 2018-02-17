@@ -5,8 +5,8 @@
   "description": "First Steps demo app for Webpack training, based on Webpack 3.x",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "start": "nodemon",
-    "start:poll": "cross-env POLL=true nodemon"
+    "start": "webpack-dashboard -- nodemon",
+    "start:poll": "cross-env POLL=true npm start"
   },
   "author": "Christophe Porteneuve <christophe@delicious-insights.com> (https://delicious-insights.com/)",
   "license": "MIT",
