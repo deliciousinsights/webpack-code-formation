@@ -25,7 +25,8 @@ const coreConfig = merge(
   parts.loadImages(),
   parts.loadFonts(),
   parts.html({ title: 'Webpack 3 - Premiers Pas' }),
-  parts.safeAssets()
+  parts.safeAssets(),
+  parts.useModuleLevelCache()
 )
 
 const devConfig = () =>

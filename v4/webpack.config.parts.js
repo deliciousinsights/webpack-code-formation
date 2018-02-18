@@ -216,6 +216,11 @@ exports.safeAssets = () => ({
   plugins: [new webpack.NoEmitOnErrorsPlugin()],
 })
 
+exports.useModuleLevelCache = (options) => {
+  const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+  return { plugins: [new HardSourceWebpackPlugin(options)] }
+}
+
 // Helper functions
 // ----------------
 

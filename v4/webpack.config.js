@@ -26,6 +26,9 @@ const coreConfig = merge(
   parts.loadFonts(),
   parts.html({ title: 'Webpack 4 - Premiers Pas' }),
   parts.safeAssets()
+  // A des soucis au premier build de nouveau cache sur WP4 récents…
+  // (https://github.com/mzgoddard/hard-source-webpack-plugin/issues/526)
+  // parts.useModuleLevelCache()
 )
 
 const devConfig = () =>
