@@ -141,8 +141,35 @@ exports.copyStatic = (...sourceDirs) => {
 // Optimizations
 // -------------
 
+function isVendor({ context }) {
+  return context && context.includes('node_modules')
+}
+
+exports.autoVendor = (options) => ({
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: isVendor,
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'runtime',
+      minChunks: Infinity,
+    }),
+    new webpack.HashedModuleIdsPlugin({
+      hashFunction: 'sha256',
+      hashDigestLength: 6,
+    }),
+  ],
+})
+
 exports.concatenateModules = () => ({
   plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
+})
+
+exports.extractCommonChunks = (options = {}) => ({
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({ name: 'common', ...options }),
+  ],
 })
 
 exports.ignoreDynamicRequiresFor = (requestRegExp, contextRegExp) => ({
@@ -151,6 +178,15 @@ exports.ignoreDynamicRequiresFor = (requestRegExp, contextRegExp) => ({
 
 exports.ignoreMomentLocales = () =>
   exports.ignoreDynamicRequiresFor(/^\.\/locale$/, /moment$/)
+
+exports.inlineRuntime = (options = {}) => {
+  const InlinerPlugin = require('html-webpack-inline-chunk-plugin')
+  return {
+    plugins: [
+      new InlinerPlugin({ inlineChunks: ['runtime'], quiet: true, ...options }),
+    ],
+  }
+}
 
 exports.makeNonProductionCodeStrippable = () => ({
   plugins: [

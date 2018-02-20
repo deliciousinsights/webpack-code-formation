@@ -13,9 +13,15 @@ const coreConfig = merge(
     entry: { main: [PATHS.source] },
     output: {
       devtoolModuleFilenameTemplate: 'webpack:///[resource-path]',
-      filename: 'main.js',
+      filename: '[name].js',
       path: PATHS.build,
       publicPath: '/',
+    },
+    optimization: {
+      runtimeChunk: true,
+      splitChunks: {
+        chunks: 'initial',
+      },
     },
   },
   parts.generateSourceMaps(),
@@ -25,7 +31,7 @@ const coreConfig = merge(
   parts.copyStatic(PATHS.static),
   parts.loadImages(),
   parts.loadFonts(),
-  parts.html({ title: 'Webpack 4 - Premiers Pas' }),
+  parts.html({ title: 'Webpack 4 - Premiers Pas', inlineRuntime: true }),
   parts.safeAssets()
   // A des soucis au premier build de nouveau cache sur WP4 récents…
   // (https://github.com/mzgoddard/hard-source-webpack-plugin/issues/526)

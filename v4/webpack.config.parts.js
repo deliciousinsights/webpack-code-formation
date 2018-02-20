@@ -123,8 +123,16 @@ exports.loadImages = ({ include, exclude, ieSafeSVGs = true } = {}) => ({
 
 exports.html = (options = {}) => {
   options = { ...options, inject: 'head', scriptLoading: 'defer' }
+  const { inlineRuntime = false, ...opts } = options
   const HtmlWebpackPlugin = require('html-webpack-plugin')
-  return { plugins: [new HtmlWebpackPlugin(options)] }
+  const plugins = [new HtmlWebpackPlugin(opts)]
+
+  if (inlineRuntime) {
+    const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
+    plugins.push(new ScriptExtHtmlWebpackPlugin({ inline: /runtime~.*\.js$/ }))
+  }
+
+  return { plugins }
 }
 
 exports.copyStatic = (...patterns) => {
@@ -213,6 +221,7 @@ exports.publishManifest = (options = {}) => {
         },
         entrypoints: true,
         entrypointsKey: 'entryPoints',
+        fileExtRegex: /\.(?!map|gz)\w+$/i,
         publicPath: true,
         ...options,
       }),

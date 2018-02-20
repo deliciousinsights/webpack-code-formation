@@ -13,7 +13,7 @@ const coreConfig = merge(
     entry: { main: [PATHS.source] },
     output: {
       devtoolModuleFilenameTemplate: 'webpack:///[resource-path]',
-      filename: 'main.js',
+      filename: '[name].js',
       path: PATHS.build,
       publicPath: '/',
     },
@@ -23,6 +23,7 @@ const coreConfig = merge(
   parts.ignoreMomentLocales(),
   parts.lintJS({ include: PATHS.source }),
   parts.copyStatic(PATHS.static),
+  parts.autoVendor(),
   parts.loadImages(),
   parts.loadFonts(),
   parts.html({ title: 'Webpack 3 - Premiers Pas' }),
@@ -65,6 +66,7 @@ const prodConfig = () =>
     parts.minifyAll(),
     parts.optimizeImages(),
     parts.compressFiles(),
+    parts.inlineRuntime(),
     parts.publishManifest()
   )
 
