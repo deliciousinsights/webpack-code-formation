@@ -14,6 +14,10 @@ exports.babelize = ({
       presets: [
         ['@babel/preset-env', { modules: false, useBuiltIns: 'usage' }],
       ],
+      plugins: [
+        '@babel/plugin-syntax-dynamic-import',
+        '@babel/plugin-transform-runtime',
+      ],
       ...options,
     }
   }

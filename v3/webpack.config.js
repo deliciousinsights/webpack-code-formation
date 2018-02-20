@@ -13,6 +13,7 @@ const coreConfig = merge(
     entry: { main: [PATHS.source] },
     output: {
       devtoolModuleFilenameTemplate: 'webpack:///[resource-path]',
+      chunkFilename: '[name].js',
       filename: '[name].js',
       path: PATHS.build,
       publicPath: '/',
@@ -55,6 +56,7 @@ const prodConfig = () =>
     coreConfig,
     {
       output: {
+        chunkFilename: '[name].[chunkhash:8].js',
         filename: '[name].[chunkhash:8].js',
       },
     },

@@ -1,3 +1,5 @@
+import './hacker-background.scss'
+
 // exports.secretEmoji = …
 export const secretEmoji = '😎'
 

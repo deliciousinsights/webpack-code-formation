@@ -1,3 +1,6 @@
+import 'regenerator-runtime/runtime'
+import './hacker-background.scss'
+
 // exports.secretEmoji = …
 export const secretEmoji = '😎'
 
@@ -8,6 +11,13 @@ export function hackerCase(text) {
     upperCase = !upperCase
     return c[upperCase ? 'toUpperCase' : 'toLowerCase']()
   })
+}
+
+export async function askDeepHacker(text) {
+  const { default: deepHack } = await import(
+    /* webpackChunkName: 'deeper-hacker', webpackPreload: true */ './deeper-hacker'
+  )
+  deepHack(text)
 }
 
 // module.exports = hackerCase

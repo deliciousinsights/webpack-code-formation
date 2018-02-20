@@ -20,7 +20,7 @@ const coreConfig = merge(
     optimization: {
       runtimeChunk: true,
       splitChunks: {
-        chunks: 'initial',
+        chunks: 'all',
       },
     },
   },

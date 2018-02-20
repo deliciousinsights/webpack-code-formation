@@ -17,6 +17,7 @@ exports.babelize = ({
           { corejs: 3, modules: false, useBuiltIns: 'usage' },
         ],
       ],
+      plugins: ['@babel/plugin-syntax-dynamic-import'],
       ...options,
     }
   }
