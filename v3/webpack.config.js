@@ -50,7 +50,13 @@ const devConfig = () =>
 
 const prodConfig = () =>
   merge.smart(
+    parts.cleanDist([PATHS.build]),
     coreConfig,
+    {
+      output: {
+        filename: '[name].[chunkhash:8].js',
+      },
+    },
     parts.generateSourceMaps({ type: 'source-map' }),
     parts.makeNonProductionCodeStrippable(),
     parts.concatenateModules(),
@@ -58,7 +64,8 @@ const prodConfig = () =>
     parts.extractSASS({ modules: true }),
     parts.minifyAll(),
     parts.optimizeImages(),
-    parts.compressFiles()
+    parts.compressFiles(),
+    parts.publishManifest()
   )
 
 module.exports = (env = process.env.NODE_ENV) =>

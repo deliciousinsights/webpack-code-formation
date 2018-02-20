@@ -54,14 +54,22 @@ const devConfig = () =>
 
 const prodConfig = () =>
   merge.smart(
+    parts.cleanDist(),
     coreConfig,
-    { mode: 'production', stats: { optimizationBailout: true } },
+    {
+      mode: 'production',
+      output: {
+        filename: '[name].[chunkhash:8].js',
+      },
+      stats: { optimizationBailout: true },
+    },
     parts.generateSourceMaps({ type: 'source-map' }),
     parts.extractCSS({ modules: true }),
     parts.extractSASS({ modules: true }),
     parts.minifyAll(),
     parts.optimizeImages(),
-    parts.compressFiles()
+    parts.compressFiles(),
+    parts.publishManifest()
   )
 
 module.exports = (env = process.env.NODE_ENV) =>

@@ -201,8 +201,32 @@ exports.compressFiles = (options = {}) => {
   }
 }
 
+exports.publishManifest = (options = {}) => {
+  const ManifestPlugin = require('webpack-assets-manifest')
+  const REGEX_BLOCKLIST = /\.(?:map|gz)$/
+
+  return {
+    plugins: [
+      new ManifestPlugin({
+        customize({ key, value }) {
+          return REGEX_BLOCKLIST.test(key) ? false : { key, value }
+        },
+        entrypoints: true,
+        entrypointsKey: 'entryPoints',
+        publicPath: true,
+        ...options,
+      }),
+    ],
+  }
+}
+
 // Dev UX
 // ------
+
+exports.cleanDist = (options) => {
+  const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+  return { plugins: [new CleanWebpackPlugin(options)] }
+}
 
 exports.dashboard = (options) => {
   const WebpackDashboardPlugin = require('webpack-dashboard/plugin')
@@ -345,7 +369,10 @@ const cssPlugins = new Map()
 function extractStyling({ ext, include, exclude, modules, name, altLang }) {
   const cssPluginExisted = cssPlugins.has(name)
   if (!cssPluginExisted) {
-    cssPlugins.set(name, new MiniCssExtractPlugin({ filename: '[name].css' }))
+    cssPlugins.set(
+      name,
+      new MiniCssExtractPlugin({ filename: '[name].[contenthash:8].css' })
+    )
   }
   const cssPlugin = cssPlugins.get(name)
 
