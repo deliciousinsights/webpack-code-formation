@@ -69,7 +69,8 @@ const prodConfig = () =>
     parts.optimizeImages(),
     parts.compressFiles(),
     parts.inlineRuntime(),
-    parts.publishManifest()
+    parts.publishManifest(),
+    process.env.WEBPACK_MONITOR === 'true' ? parts.monitor() : undefined
   )
 
 module.exports = (env = process.env.NODE_ENV) =>

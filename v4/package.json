@@ -6,7 +6,8 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "start": "webpack-dashboard -- nodemon",
-    "start:poll": "cross-env POLL=true npm start"
+    "start:poll": "cross-env POLL=true npm start",
+    "stats": "npm run build --silent -- --profile --json > stats.json"
   },
   "author": "Christophe Porteneuve <christophe@delicious-insights.com> (https://delicious-insights.com/)",
   "license": "MIT",

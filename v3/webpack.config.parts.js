@@ -330,6 +330,11 @@ exports.generateSourceMaps = ({ type = 'cheap-module-source-map' } = {}) => ({
   devtool: type,
 })
 
+exports.monitor = (options = { launch: true }) => {
+  const Monitor = require('webpack-monitor')
+  return { plugins: [new Monitor(options)] }
+}
+
 exports.safeAssets = () => ({
   plugins: [new webpack.NoEmitOnErrorsPlugin()],
 })
