@@ -10,3 +10,9 @@ body {
 strong {
   color: $hl-color;
 }
+
+:local(.hero-unit) {
+  width: 100%;
+  font-size: 2em;
+  text-align: center;
+}
