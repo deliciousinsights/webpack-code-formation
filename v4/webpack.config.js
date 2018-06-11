@@ -38,7 +38,15 @@ module.exports = {
         test: /\.css$/,
         use: [
           { loader: 'style-loader' },
-          { loader: 'css-loader', options: { sourceMap: true } },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              localsConvention: 'camelCaseOnly',
+              modules: { localIdentName: '_[name]-[local]-[hash:base64:4]' },
+              sourceMap: true,
+            },
+          },
           {
             ident: 'postcss',
             loader: 'postcss-loader',
@@ -53,7 +61,15 @@ module.exports = {
         test: /\.scss$/,
         use: [
           { loader: 'style-loader' },
-          { loader: 'css-loader', options: { sourceMap: true } },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              localsConvention: 'camelCaseOnly',
+              modules: { localIdentName: '_[name]-[local]-[hash:base64:4]' },
+              sourceMap: true,
+            },
+          },
           {
             ident: 'postcss',
             loader: 'postcss-loader',

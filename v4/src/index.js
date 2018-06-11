@@ -1,6 +1,6 @@
 import hackerCase, { secretEmoji as hackerEmoji } from './utils/hacker-case'
 
-import './index.scss'
+import { heroUnit } from './index.scss'
 
 const { hangman, secretEmoji: hangmanEmoji } = require('./utils/hangman')
 
@@ -13,5 +13,7 @@ document.body.insertAdjacentHTML(
   `
     <h1>Et hop avec la CSS appliquée…</h1>
     <p>C’est <strong>super cool</strong> quand même…</p>
+
+    <div class="${heroUnit}">Hero Unit</div>
   `
 )

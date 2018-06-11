@@ -37,7 +37,13 @@ module.exports = {
           { loader: 'style-loader', options: { sourceMap: true } },
           {
             loader: 'css-loader',
-            options: { importLoaders: 1, sourceMap: true },
+            options: {
+              camelCase: 'only',
+              importLoaders: 1,
+              localIdentName: '_[name]-[local]-[hash:base64:4]',
+              modules: true,
+              sourceMap: true,
+            },
           },
           {
             ident: 'postcss',
@@ -55,7 +61,13 @@ module.exports = {
           { loader: 'style-loader', options: { sourceMap: true } },
           {
             loader: 'css-loader',
-            options: { importLoaders: 1, sourceMap: true },
+            options: {
+              camelCase: 'only',
+              importLoaders: 1,
+              localIdentName: '_[name]-[local]-[hash:base64:4]',
+              modules: true,
+              sourceMap: true,
+            },
           },
           {
             ident: 'postcss',
