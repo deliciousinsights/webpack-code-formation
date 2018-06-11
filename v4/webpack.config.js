@@ -11,6 +11,9 @@ module.exports = {
     devtoolModuleFilenameTemplate: 'webpack:///[resource-path]',
     filename: 'main.js',
     path: PATHS.build,
+    // Because file:// usage for now, so image URLs get b0rked otherwise…
+    // (Always a good idea anyhow, esp. over HTTP).
+    publicPath: PATHS.build + '/',
   },
   devtool: 'cheap-module-source-map',
   module: {
@@ -80,6 +83,24 @@ module.exports = {
           },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
+      },
+      {
+        test: /\.(?:jpe?g|gif|png)$/,
+        use: {
+          loader: 'url-loader',
+          options: { limit: 10000, name: '[sha256:hash:16].[ext]' },
+        },
+      },
+      {
+        test: /\.svg$/,
+        use: {
+          loader: 'svg-url-loader',
+          options: {
+            iesafe: true,
+            limit: 10000,
+            name: '[sha256:hash:16].[ext]',
+          },
+        },
       },
     ],
   },
