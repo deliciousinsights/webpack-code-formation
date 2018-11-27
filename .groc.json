@@ -1,0 +1,10 @@
+{
+  "glob": [
+    "*/src/**/*.js",
+    "*/webpack.*.js",
+    "*/nodemon.json",
+    "*/package.json"
+  ],
+  "github": false,
+  "--no-strip": true
+}

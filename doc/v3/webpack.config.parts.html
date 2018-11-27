@@ -1,0 +1,453 @@
+<!DOCTYPE html><html lang="en"><head><title>v3/webpack.config.parts</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="v3/webpack.config.parts"><meta name="groc-project-path" content="v3/webpack.config.parts.js"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path">v3/webpack.config.parts.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="webpack-v3-lments-de-configuration">Webpack v3 - Éléments de configuration</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">const</span> ExtractTextPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'extract-text-webpack-plugin'</span>)
+<span class="hljs-keyword">const</span> webpack = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack'</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="babel">Babel</h2>
+<p>Passage des fichiers <code>.js</code> et <code>.jsx</code> par Babel, par défaut en preset <code>env</code> sans
+transpilation des modules (pour que Webpack puisse faire ses optims) mais avec
+<code>useBuiltIns: true</code> (pour minimiser l’impact éventuel de <code>babel-polyfill</code>). On
+ignore aussi <code>node_modules</code> par défaut.</p></div></div><div class="code"><div class="wrapper">exports.babelize = ({
+  include,
+  exclude = <span class="hljs-regexp">/node_modules/</span>,
+  options = {},
+} = {}) =&gt; {
+  <span class="hljs-keyword">if</span> (options.presets === <span class="hljs-literal">undefined</span>) {
+    options = {
+      presets: [
+        [<span class="hljs-string">'@babel/preset-env'</span>, { modules: <span class="hljs-literal">false</span>, useBuiltIns: <span class="hljs-string">'usage'</span> }],
+      ],
+      plugins: [
+        <span class="hljs-string">'@babel/plugin-syntax-dynamic-import'</span>,
+        <span class="hljs-string">'@babel/plugin-transform-runtime'</span>,
+      ],
+      ...options,
+    }
+  }
+  <span class="hljs-keyword">if</span> (options === <span class="hljs-literal">false</span>) {
+    options = <span class="hljs-literal">undefined</span>
+  }
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-built_in">module</span>: {
+      rules: [
+        {
+          test: <span class="hljs-regexp">/\.jsx?$/</span>,
+          include,
+          exclude,
+          use: [{ loader: <span class="hljs-string">'babel-loader'</span>, options }],
+        },
+      ],
+    },
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="eslint">ESLint</h2>
+<p>Permet d’assurer le <em>linting</em> pendant le build, indépendamment de son recours
+dans l’éditeur / EDI ou en hook de pre-commit Git.  Exclue <code>node_modules</code> par
+défaut.  La configuration est supposée externe (<code>.eslintrc.json</code> ou clé
+<code>eslintConfig</code> dans <code>package.json</code>).</p></div></div><div class="code"><div class="wrapper">exports.lintJS = ({ include, exclude = <span class="hljs-regexp">/node_modules/</span> } = {}) =&gt; ({
+  <span class="hljs-built_in">module</span>: {
+    rules: [
+      {
+        test: <span class="hljs-regexp">/\.jsx?$/</span>,
+        include,
+        exclude,
+        use: [<span class="hljs-string">'eslint-loader'</span>],
+      },
+    ],
+  },
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="css-amp-sass">CSS &amp; SASS</h2>
+<p>Tous ces extracteurs (prod) et injecteurs (dev) utilisent PostCSS avec
+cssnext, se basant sur une config partagée type <code>.browserslistrc</code>.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Extraction en fichier à part des sources <code>.css</code>, orientée production donc.
+Le fichier produit inclue automatiquement un hash pour le <em>Long-Term Caching</em>.</p></div></div><div class="code"><div class="wrapper">exports.extractCSS = ({ include, exclude, modules }) =&gt;
+  extractStyling({ ext: <span class="hljs-string">'css'</span>, include, exclude, modules })</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Idem, mais pour les sources <code>.scss</code>.  Préfixe la pipeline de chargeurs par
+le transpileur SASS.</p></div></div><div class="code"><div class="wrapper">exports.extractSASS = ({ include, exclude, modules }) =&gt;
+  extractStyling({ ext: <span class="hljs-string">'scss'</span>, include, exclude, modules, altLang: <span class="hljs-string">'sass'</span> })</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Injection dans le DOM des sources <code>.css</code>, orientée développement et
+chargement dynamique en production (<em>fallback loader</em> de l’extracteur).</p></div></div><div class="code"><div class="wrapper">exports.loadCSS = ({ include, exclude, modules }) =&gt;
+  loadStyling({ ext: <span class="hljs-string">'css'</span>, include, exclude, modules })</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Idem, mais pour les sources <code>.scss</code>.</p></div></div><div class="code"><div class="wrapper">exports.loadSASS = ({ include, exclude, modules }) =&gt;
+  loadStyling({ ext: <span class="hljs-string">'scss'</span>, include, exclude, modules, altLang: <span class="hljs-string">'sass'</span> })</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="images-amp-fonts">Images &amp; Fonts</h2>
+<p>Charge les fontes en préférant un <em>inlining</em> en-dessous de 10Ko,
+sous forme d’URL <code>data:</code> en Base64.  Même si on teste ici toutes les
+extensions usuelles de <em>web fonts</em>, en pratique WOFF + WOFF2 suffit généralement
+à couvrir tous les navigateurs.  Les fichiers générés sont automatiquement
+hashés, par précaution à 16 caractères (8 suffiraient sans doute).</p></div></div><div class="code"><div class="wrapper">exports.loadFonts = ({ include, exclude } = {}) =&gt; ({
+  <span class="hljs-built_in">module</span>: {
+    rules: [
+      {
+        test: <span class="hljs-regexp">/\.(?:woff2?|eot|ttf|otf)$/</span>,
+        include,
+        exclude,
+        use: [
+          {
+            loader: <span class="hljs-string">'url-loader'</span>,
+            options: { limit: <span class="hljs-number">10000</span>, name: <span class="hljs-string">'[sha256:hash:16].[ext]'</span> },
+          },
+        ],
+      },
+    ],
+  },
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Charge les images en préférant un <em>inlining</em> en-dessous de 10Ko,
+sous forme d’URL <code>data:</code> en Base64 (pour les images <em>raster</em>, basées
+pixels) ou UTF-8 (pour les SVG).  Les fichiers générés sont automatiquement
+hashés, par précaution à 16 caractères (8 suffiraient sans doute).
+Les SVG inlinées sont retravaillées pour passer correctement sur cette
+!@# d’IE.</p></div></div><div class="code"><div class="wrapper">exports.loadImages = ({ include, exclude, ieSafeSVGs = <span class="hljs-literal">true</span> } = {}) =&gt; ({
+  <span class="hljs-built_in">module</span>: {
+    rules: [
+      {
+        test: <span class="hljs-regexp">/\.(?:jpe?g|png|gif|webp)$/</span>,
+        include,
+        exclude,
+        use: [
+          {
+            loader: <span class="hljs-string">'url-loader'</span>,
+            options: { limit: <span class="hljs-number">10000</span>, name: <span class="hljs-string">'[sha256:hash:16].[ext]'</span> },
+          },
+        ],
+      },
+      {
+        test: <span class="hljs-regexp">/\.svg$/</span>,
+        include,
+        exclude,
+        use: [
+          {
+            loader: <span class="hljs-string">'svg-url-loader'</span>,
+            options: {
+              iesafe: ieSafeSVGs,
+              limit: <span class="hljs-number">10000</span>,
+              name: <span class="hljs-string">'[sha256:hash:16].[ext]'</span>,
+              stripdeclarations: <span class="hljs-literal">true</span>,
+            },
+          },
+        ],
+      },
+    ],
+  },
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="gnration-dynamique-du-gabarit-html">Génération dynamique du gabarit HTML</h2>
+<p>Génère dynamiquement un <code>index.html</code> (ou autre, selon options), qui
+comprendra les bonnes balises <code>&lt;script&gt;</code> (et éventuellement <code>&lt;link rel=&quot;stylesheet&quot;/&gt;</code>)
+en fonction des bundles définis dans la configuration.  Peut être appelé plusieurs fois
+avec ses <a href="https://github.com/webpack-contrib/html-webpack-plugin#readme">moult options</a>
+pour générer plusieurs fichiers.</p></div></div><div class="code"><div class="wrapper">exports.html = (options = {}) =&gt; {
+  options = {
+    ...options,
+    meta: {
+      viewport: <span class="hljs-string">'width=device-width, initial-scale=1'</span>,
+      ...options.meta,
+    },
+  }
+
+  <span class="hljs-keyword">const</span> HtmlWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'html-webpack-plugin'</span>)
+  <span class="hljs-keyword">return</span> { plugins: [<span class="hljs-keyword">new</span> HtmlWebpackPlugin(options)] }
+}
+
+exports.copyStatic = (...sourceDirs) =&gt; {
+  <span class="hljs-keyword">const</span> CopyPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'copy-webpack-plugin'</span>)
+  <span class="hljs-keyword">return</span> {
+    plugins: [<span class="hljs-keyword">new</span> CopyPlugin(sourceDirs)],
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="optimizations">Optimizations</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Extraction automatique des modules NPM dans un unique bundle <code>vendor</code> (si on code-splitte
+beaucoup ou qu’on bundle-splitte pas mal par ailleurs, c’est bien mais sous-optimal), et
+extraction à part de la <em>runtime</em> Webpack, pour réduire le risque de re-hash intempestif
+sur les bundles lors d’une modification (ça permet en plus l’<em>inlining</em> dans le HTML).</p>
+<p>En pratique, ce traitement disparaît dans Webpack 4+, car il est automatisé, en mieux, par
+le nouveau <code>SplitChunksPlugin</code>, qui est plus performant et pertinent ; <code>CommonsChunkPlugin</code>
+est quant à lui retiré. <a href="https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366">Voir les détails</a>.</p></div></div><div class="code"><div class="wrapper">exports.autoVendor = (options) =&gt; ({
+  plugins: [
+    <span class="hljs-keyword">new</span> webpack.optimize.CommonsChunkPlugin({
+      name: <span class="hljs-string">'vendor'</span>,
+      minChunks: isVendor,
+    }),
+    <span class="hljs-keyword">new</span> webpack.optimize.CommonsChunkPlugin({
+      name: <span class="hljs-string">'runtime'</span>,
+      minChunks: <span class="hljs-literal">Infinity</span>,
+    }),
+    <span class="hljs-keyword">new</span> webpack.HashedModuleIdsPlugin({
+      hashFunction: <span class="hljs-string">'sha256'</span>,
+      hashDigestLength: <span class="hljs-number">6</span>,
+    }),
+  ],
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Active le <em>scope hoisting</em>, qui permet de réduire considérablement l’empreinte
+de la « plomberie » Webpack autour des modules ES.  Automatiquement activé avec
+Webpack 4, au travers d’une autre option.</p></div></div><div class="code"><div class="wrapper">exports.concatenateModules = () =&gt; ({
+  plugins: [<span class="hljs-keyword">new</span> webpack.optimize.ModuleConcatenationPlugin()],
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Extrait du code commun clairement identifié (généralement au travers d’une option
+<code>chunks</code> ou <code>minChunks</code>) dans un bundle dédié (par défaut <code>common</code>).  Intervient le
+plus souvent en surcouche de <code>autoVendor</code>, pour extraire du code commun côté
+applicatif.  Là aussi, obsolétisé par la nouvelle approche, plus performante et
+automatique, de Webpack 4.</p></div></div><div class="code"><div class="wrapper">exports.extractCommonChunks = (options = {}) =&gt; ({
+  plugins: [
+    <span class="hljs-keyword">new</span> webpack.optimize.CommonsChunkPlugin({ name: <span class="hljs-string">'common'</span>, ...options }),
+  ],
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Méthode générique de non-bundling de <code>require(…)</code> dynamiques.  En pratique,
+surtout utilisée via son cas particulier Moment.js (voir méthode suivante).</p></div></div><div class="code"><div class="wrapper">exports.ignoreDynamicRequiresFor = (requestRegExp, contextRegExp) =&gt; ({
+  plugins: [<span class="hljs-keyword">new</span> webpack.IgnorePlugin(requestRegExp, contextRegExp)],
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Ne bundle pas par défaut les locales de Moment.js (~50Ko min+gz quand même !),
+nous laissant le soin de requérir/importer manuellement ceux dont on a besoin.</p></div></div><div class="code"><div class="wrapper">exports.ignoreMomentLocales = () =&gt;
+  exports.ignoreDynamicRequiresFor(<span class="hljs-regexp">/^\.\/locale$/</span>, <span class="hljs-regexp">/moment$/</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><em>Inline</em> la <em>runtime</em> de Webpack dans le HTML généré par <code>html-webpack-plugin</code>,
+afin d’économiser une requête HTTP au démarrage.  Dans Webpack 4, nécessite
+l’option <code>optimization.runtimeChunk: true</code>.</p></div></div><div class="code"><div class="wrapper">exports.inlineRuntime = (options = {}) =&gt; {
+  <span class="hljs-keyword">const</span> InlinerPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'html-webpack-inline-chunk-plugin'</span>)
+  <span class="hljs-keyword">return</span> {
+    plugins: [
+      <span class="hljs-keyword">new</span> InlinerPlugin({ inlineChunks: [<span class="hljs-string">'runtime'</span>], quiet: <span class="hljs-literal">true</span>, ...options }),
+    ],
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Ajuste le code produit pour que les expressions qui, au final, évaluent
+<code>process.env.NODE_ENV</code> soient résolues statiquement à la valeur <code>&quot;production&quot;</code>.
+Ainsi, le code conditionnel basé dessus devient évaluable statiquement, ce
+qui permet notamment l’élimination de code mort pour les blocs qui requierent
+une valeur autre que <code>&quot;production&quot;</code>.  Fait automatiquement par Webpack 4.</p></div></div><div class="code"><div class="wrapper">exports.makeNonProductionCodeStrippable = () =&gt; ({
+  plugins: [
+    <span class="hljs-keyword">new</span> webpack.DefinePlugin({ <span class="hljs-string">'process.env.NODE_ENV'</span>: <span class="hljs-string">'"production"'</span> }),
+  ],
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Minifie le JS et les CSS</p></div></div><div class="code"><div class="wrapper">exports.minifyAll = (options = {}) =&gt; {
+  <span class="hljs-keyword">const</span> UglifyJSPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'uglifyjs-webpack-plugin'</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Tant qu’à faire, on optimise le temps de minification…</p></div></div><div class="code"><div class="wrapper">  options = { parallel: <span class="hljs-literal">true</span>, sourceMap: <span class="hljs-literal">true</span>, ...options }
+
+  <span class="hljs-keyword">return</span> {
+    plugins: [</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Le css-loader va réagir à l’option générique <code>minimize: true</code> en
+activant une minification clean basée sur cssnano.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-keyword">new</span> webpack.LoaderOptionsPlugin({ minimize: <span class="hljs-literal">true</span> }),
+      <span class="hljs-keyword">new</span> UglifyJSPlugin(options),
+    ],
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Passe les images (inline ou non) par imagemin, lequel délègue aux optimiseurs
+de l’état de l’art par type d’image : mozjpeg pour les JPEG, pngquant pour les PNG
+(on désactive optipng, moins performant), gifsicle pour les GIF, et svgo pour les SVG.
+On cale par défaut le facteur de qualité des JPEG à 75, amplement suffisant pour 99,9% des cas.</p>
+<p>Si vous spritez les images, assurez-vous de faire passer cette optimisation <em>après</em> le spriting,
+pas avant (donc <em>avant</em> en termes de pipeline de chargeurs…).</p></div></div><div class="code"><div class="wrapper">exports.optimizeImages = (options = {}) =&gt; {
+  options = {
+    optipng: { enabled: <span class="hljs-literal">false</span> },
+    ...options,
+    mozjpeg: { quality: <span class="hljs-number">75</span>, ...(options.mozjpeg || {}) },
+  }
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-built_in">module</span>: {
+      rules: [
+        {
+          test: <span class="hljs-regexp">/\.(?:jpe?g|png|gif|webp|svg)$/</span>,
+          use: [{ loader: <span class="hljs-string">'image-webpack-loader'</span>, options }],
+        },
+      ],
+    },
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>On pré-compresse via Zopfli les fichiers textuels, en ajoutant l&#39;extension
+<code>.gz</code>et en gardant les originaux, pour permettre le « GZip Statique » sur les
+serveurs d&#39;assets / CDN.  Les PNG ont aussi tout à gagner à se prendre une
+couche Zopfli, mais sans changer leur extension ni garder la version
+d’origine, du coup.</p></div></div><div class="code"><div class="wrapper">exports.compressFiles = (options = {}) =&gt; {
+  <span class="hljs-keyword">const</span> CompressionPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'compression-webpack-plugin'</span>)
+  <span class="hljs-keyword">const</span> { gzip: algorithm } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@gfx/zopfli'</span>)
+  <span class="hljs-keyword">return</span> {
+    plugins: [
+      <span class="hljs-keyword">new</span> CompressionPlugin(
+        {
+          test: <span class="hljs-regexp">/\.(?:html|jsx?|css|svg)$/</span>,
+          ...options,
+          algorithm,
+        },
+        {
+          test: <span class="hljs-regexp">/\.png$/</span>,
+          deleteOriginalAssets: <span class="hljs-literal">true</span>,
+          ...options,
+          algorithm,
+        }
+      ),
+    ],
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Extrait le manifeste des assets produits dans un fichier JSON à part (par
+défaut, <code>manifest.json</code> dans le <code>output.path</code>), afin qu’une couche serveur
+produisant le HTML puisse l’utiliser pour écrire les bonnes balises <code>&lt;link
+rel=&quot;stylesheet&quot;…/&gt;</code> et <code>&lt;script&gt;</code>.</p></div></div><div class="code"><div class="wrapper">exports.publishManifest = (options = {}) =&gt; {
+  <span class="hljs-keyword">const</span> ManifestPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack-assets-manifest'</span>)
+  <span class="hljs-keyword">const</span> REGEX_BLACKLIST = <span class="hljs-regexp">/\.(?:map|gz)$/</span>
+
+  <span class="hljs-keyword">return</span> {
+    plugins: [
+      <span class="hljs-keyword">new</span> ManifestPlugin({
+        customize(key, value) {
+          <span class="hljs-keyword">return</span> REGEX_BLACKLIST.test(key) ? <span class="hljs-literal">false</span> : { key, value }
+        },
+        publicPath: <span class="hljs-literal">true</span>,
+        ...options,
+      }),
+    ],
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="dev-ux">Dev UX</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Purge le dossier de build (<code>output.path</code>), ce qui est notamment utile quand les noms de fichiers
+changent parfois d’un build à l’autre, par exemple en raison de leur hash.</p></div></div><div class="code"><div class="wrapper">exports.cleanDist = (paths, options) =&gt; {
+  <span class="hljs-keyword">const</span> CleanWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'clean-webpack-plugin'</span>)
+  <span class="hljs-keyword">return</span> { plugins: [<span class="hljs-keyword">new</span> CleanWebpackPlugin(paths, options)] }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Injecte le « serveur » de Webpack-Dashboard, pour que la CLI de celui-ci puisse s’interfacer avec
+le moteur de Webpack.</p></div></div><div class="code"><div class="wrapper">exports.dashboard = (options) =&gt; {
+  <span class="hljs-keyword">const</span> WebpackDashboardPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack-dashboard/plugin'</span>)
+  <span class="hljs-keyword">return</span> { plugins: [<span class="hljs-keyword">new</span> WebpackDashboardPlugin(options)] }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Personnalisation du serveur de webpack-Dev-Server.  On est en mode <code>hot</code> par défaut (<code>hot</code>, pas <code>hotOnly</code>),
+avec dans ce cas le plugin HMR injecté ainsi que celui qui donne leurs noms utiles aux modules (plutôt que
+des IDs strictement numériques, totalement inutilisables au débogage).  On active aussi de base le <em>deep linking</em>
+(option <code>historyApiFallback</code> à <code>true</code>) : toute URL non reconnue, hors proxying éventuel, renverra le <code>/index.html</code>.</p>
+<p>Par rapport aux options de base du bloc <code>devServer</code>, on ajoute un peu de confort :</p>
+<ul>
+<li>Au lieu d’options booléennes séparées <code>hot</code> et <code>hotOnly</code>, on a <code>hot</code> qui peut valoir <code>true</code>, <code>false</code> ou <code>&#39;only&#39;</code>.</li>
+<li>Au lieu d’options séparées <code>open</code> et <code>openPage</code>, on a une option <code>open</code> qui peut valoir <code>true</code>, <code>false</code> ou l’URL à ouvrir.</li>
+</ul></div></div><div class="code"><div class="wrapper">exports.devServer = ({
+  contentBase,
+  hot = <span class="hljs-literal">true</span>,
+  https,
+  open,
+  poll = process.env.POLL,
+  port,
+  proxy,
+} = {}) =&gt; {
+  <span class="hljs-keyword">const</span> devServer = {
+    contentBase,
+    historyApiFallback: <span class="hljs-literal">true</span>,
+    https,
+    noInfo: <span class="hljs-literal">true</span>,
+    overlay: <span class="hljs-literal">true</span>,
+    port,
+    proxy,
+  }
+
+  <span class="hljs-keyword">const</span> plugins = []
+  <span class="hljs-keyword">if</span> (hot) {
+    plugins.push(
+      <span class="hljs-keyword">new</span> webpack.HotModuleReplacementPlugin(),
+      <span class="hljs-keyword">new</span> webpack.NamedModulesPlugin()
+    )
+  }
+
+  <span class="hljs-keyword">if</span> (hot === <span class="hljs-string">'only'</span>) {
+    devServer.hotOnly = <span class="hljs-literal">true</span>
+  } <span class="hljs-keyword">else</span> {
+    devServer.hot = !!hot
+  }
+
+  <span class="hljs-keyword">if</span> (poll !== <span class="hljs-literal">undefined</span>) {
+    devServer.watchOptions = { poll: !!poll }
+  }
+
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> open === <span class="hljs-string">'string'</span>) {
+    devServer.openPage = open
+  } <span class="hljs-keyword">else</span> {
+    devServer.open = !!open
+  }
+
+  <span class="hljs-keyword">return</span> { devServer, plugins }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Active la génération de <em>source maps</em>.  Le type par défaut,
+<code>cheap-module-source-map</code>, est un bon choix pour le développement (si le
+ligne à ligne suffit ; dans le cas contraire, on préfèrera <code>source-map</code>, un
+poil moins rapide mais qui permet les points d’arrêt colonnaires).  En
+production, on préfèrera spécifier <code>source-map</code> ou <code>hidden-source-map</code> pour
+un maximum de détails.  Webpack 4 utilise par défaut <code>&#39;eval&#39;</code> en
+développement, mais ce mode, certes très rapide, ne fournit pas le source
+pré-transpilation (original), ce qui craint un peu…</p></div></div><div class="code"><div class="wrapper">exports.generateSourceMaps = ({ type = <span class="hljs-string">'cheap-module-source-map'</span> } = {}) =&gt; ({
+  devtool: type,
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Injecte le « serveur » de Webpack Monitor, dont l’outil CLI est le client.  Permet d’enregistrer
+et de comparer, d’un build à l’autre, toutes les stats et détails, pour vérifier que le build
+évolue « dans le bon sens »…</p></div></div><div class="code"><div class="wrapper">exports.monitor = (options = { launch: <span class="hljs-literal">true</span> }) =&gt; {
+  <span class="hljs-keyword">const</span> Monitor = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack-monitor'</span>)
+  <span class="hljs-keyword">return</span> { plugins: [<span class="hljs-keyword">new</span> Monitor(options)] }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Empêche Webpack de produire des assets (en mémoire ou sur disque) lorsqu’1+ asset rencontre une erreur.
+Permet d’éviter les builds « le cul entre deux chaises ».  Automatique en production dans Webpack 4.</p></div></div><div class="code"><div class="wrapper">exports.safeAssets = () =&gt; ({
+  plugins: [<span class="hljs-keyword">new</span> webpack.NoEmitOnErrorsPlugin()],
+})</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Active le plugin <code>HardDisk</code>, qui cache de façon persistente la plupart des étapes intermédiaires de
+traitement de modules par les chargeurs et les plugins, au moyen du mécanisme Webpack de <em>records</em>.
+Sans doute l’opti la plus impactante à mettre en place pour réduire les temps de builds, en dev comme
+en prod.  Webpack 5 devrait en réduire considérablement l’intérêt, on verra bien…</p></div></div><div class="code"><div class="wrapper">exports.useModuleLevelCache = (options) =&gt; {
+  <span class="hljs-keyword">const</span> HardSourceWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hard-source-webpack-plugin'</span>)
+  <span class="hljs-keyword">return</span> { plugins: [<span class="hljs-keyword">new</span> HardSourceWebpackPlugin(options)] }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="fonctions-utilitaires-internes">Fonctions utilitaires internes</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Détermine si un module a <code>node_modules</code> dans son chemin.  Utilisé pour le « vendoring automatique ».</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isVendor</span>(<span class="hljs-params">{ context }</span>) </span>{
+  <span class="hljs-keyword">return</span> context &amp;&amp; context.includes(<span class="hljs-string">'node_modules'</span>)
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Construit une pipeline de chargeurs CSS, avec ou sans <code>style-loader</code> en fin de chaîne (début de tableau, donc),
+assurant notamment PostCSS avec css-next mais aussi, en début de pipeline (fin de tableau), un éventuel
+transpileur si <code>altLang</code> est fourni (ex. <code>sass</code>, <code>stylus</code>, <code>less</code>).  Cœur de génération des règles pour les
+extracteurs (prod) et injecteurs (dev) de style.</p>
+<p>L’option <code>modules</code>, si elle est juste booléenne, se transforme en une série d’options fines pour de meilleures
+pratiques : export <em>camel-case only</em> et construction plus « débogable » des noms de classes dynamiques.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildCSSRule</span>(<span class="hljs-params">{
+  ext,
+  altLang = null,
+  include,
+  exclude,
+  modules = false,
+  useStyle = false,
+}</span>) </span>{
+  <span class="hljs-keyword">const</span> cssOptions = { importLoaders: <span class="hljs-number">1</span>, sourceMap: <span class="hljs-literal">true</span> }
+  <span class="hljs-keyword">if</span> (modules === <span class="hljs-literal">true</span>) {
+    modules = {
+      camelCase: <span class="hljs-string">'only'</span>,
+      localIdentName: <span class="hljs-string">'_[name]-[local]-[hash:base64:4]'</span>,
+      modules: <span class="hljs-literal">true</span>,
+    }
+  }
+  <span class="hljs-keyword">if</span> (modules) {
+    <span class="hljs-built_in">Object</span>.assign(cssOptions, modules)
+  }
+
+  <span class="hljs-keyword">const</span> result = {
+    test: <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">`\\.<span class="hljs-subst">${ext}</span>$`</span>),
+    include,
+    exclude,
+    use: [
+      { loader: <span class="hljs-string">'css-loader'</span>, options: cssOptions },
+      {
+        loader: <span class="hljs-string">'postcss-loader'</span>,
+        options: {
+          plugins: (loader) =&gt; [<span class="hljs-built_in">require</span>(<span class="hljs-string">'postcss-cssnext'</span>)()],
+          sourceMap: <span class="hljs-literal">true</span>,
+        },
+      },
+    ],
+  }
+
+  <span class="hljs-keyword">if</span> (altLang) {
+    result.use.push({
+      loader: <span class="hljs-string">`<span class="hljs-subst">${altLang}</span>-loader`</span>,
+      options: { sourceMap: <span class="hljs-literal">true</span> },
+    })
+  }
+
+  <span class="hljs-keyword">if</span> (useStyle) {
+    result.use.unshift(<span class="hljs-string">'style-loader'</span>)
+  }
+
+  <span class="hljs-keyword">return</span> result
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Afin de ne pas multiplier les plugins d’extraction, on en fait un par option
+(optionnelle d’ailleur) <code>name</code>, et on maintient une map.  Seuls les nouveaux
+noms entraînent un ajout dans <code>plugins</code>.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-keyword">const</span> cssPlugins = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Construction générique d’une pipeline d’extraction CSS.  Se repose en interne sur
+<code>buildCSSRule(…)</code>.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">extractStyling</span>(<span class="hljs-params">{ ext, include, exclude, modules, name, altLang }</span>) </span>{
+  <span class="hljs-keyword">const</span> cssPluginExisted = cssPlugins.has(name)
+  <span class="hljs-keyword">if</span> (!cssPluginExisted) {
+    cssPlugins.set(
+      name,
+      <span class="hljs-keyword">new</span> ExtractTextPlugin({ filename: <span class="hljs-string">'[name].[contenthash:8].css'</span> })
+    )
+  }
+  <span class="hljs-keyword">const</span> cssPlugin = cssPlugins.get(name)
+
+  <span class="hljs-keyword">const</span> { test, use } = buildCSSRule({ ext, modules, altLang })
+
+  <span class="hljs-keyword">return</span> {
+    plugins: cssPluginExisted ? [] : [cssPlugin],
+    <span class="hljs-built_in">module</span>: {
+      rules: [
+        {
+          test,
+          include,
+          exclude,
+          use: cssPlugin.extract({ fallback: <span class="hljs-string">'style-loader'</span>, use }),
+        },
+      ],
+    },
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Construction générique d’une pipeline d’injection CSS.  Se repose en interne sur
+<code>buildCSSRule(…)</code>.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadStyling</span>(<span class="hljs-params">{ ext, include, exclude, modules, altLang }</span>) </span>{
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-built_in">module</span>: {
+      rules: [
+        buildCSSRule({
+          altLang,
+          exclude,
+          ext,
+          include,
+          modules,
+          useStyle: <span class="hljs-literal">true</span>,
+        }),
+      ],
+    },
+  }
+}</div></div></div></div></body></html>

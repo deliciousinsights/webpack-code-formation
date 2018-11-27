@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><title>v3/package</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="v3/package"><meta name="groc-project-path" content="v3/package.json"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path">v3/package.json</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">{
+  "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"webpack-first-steps-v3"</span></span>,
+  "<span class="hljs-attribute">private</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+  "<span class="hljs-attribute">version</span>": <span class="hljs-value"><span class="hljs-string">"1.0.0"</span></span>,
+  "<span class="hljs-attribute">description</span>":
+    <span class="hljs-value"><span class="hljs-string">"First Steps demo app for Webpack training, based on Webpack 3.x"</span></span>,
+  "<span class="hljs-attribute">scripts</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">build</span>": <span class="hljs-value"><span class="hljs-string">"cross-env NODE_ENV=production webpack"</span></span>,
+    "<span class="hljs-attribute">start</span>": <span class="hljs-value"><span class="hljs-string">"webpack-dashboard -- nodemon"</span></span>,
+    "<span class="hljs-attribute">stats</span>": <span class="hljs-value"><span class="hljs-string">"npm run build -- --profile --json &gt; stats.json"</span></span>,
+    "<span class="hljs-attribute">monitor</span>": <span class="hljs-value"><span class="hljs-string">"cross-env WEBPACK_MONITOR=true npm run build"</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">author</span>":
+    <span class="hljs-value"><span class="hljs-string">"Christophe Porteneuve &lt;christophe@delicious-insights.com&gt; (https://delicious-insights.com/)"</span></span>,
+  "<span class="hljs-attribute">license</span>": <span class="hljs-value"><span class="hljs-string">"MIT"</span></span>,
+  "<span class="hljs-attribute">devDependencies</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">babel-core</span>": <span class="hljs-value"><span class="hljs-string">"^6.26.0"</span></span>,
+    "<span class="hljs-attribute">babel-eslint</span>": <span class="hljs-value"><span class="hljs-string">"^8.2.1"</span></span>,
+    "<span class="hljs-attribute">babel-loader</span>": <span class="hljs-value"><span class="hljs-string">"^7.1.2"</span></span>,
+    "<span class="hljs-attribute">babel-plugin-syntax-dynamic-import</span>": <span class="hljs-value"><span class="hljs-string">"^6.18.0"</span></span>,
+    "<span class="hljs-attribute">babel-preset-env</span>": <span class="hljs-value"><span class="hljs-string">"^1.6.1"</span></span>,
+    "<span class="hljs-attribute">bundle-buddy</span>": <span class="hljs-value"><span class="hljs-string">"^0.2.1"</span></span>,
+    "<span class="hljs-attribute">clean-webpack-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^0.1.18"</span></span>,
+    "<span class="hljs-attribute">cross-env</span>": <span class="hljs-value"><span class="hljs-string">"^5.1.3"</span></span>,
+    "<span class="hljs-attribute">css-loader</span>": <span class="hljs-value"><span class="hljs-string">"^0.28.9"</span></span>,
+    "<span class="hljs-attribute">eslint</span>": <span class="hljs-value"><span class="hljs-string">"^4.17.0"</span></span>,
+    "<span class="hljs-attribute">eslint-config-prettier</span>": <span class="hljs-value"><span class="hljs-string">"^2.9.0"</span></span>,
+    "<span class="hljs-attribute">eslint-config-standard</span>": <span class="hljs-value"><span class="hljs-string">"^11.0.0-beta.0"</span></span>,
+    "<span class="hljs-attribute">eslint-loader</span>": <span class="hljs-value"><span class="hljs-string">"^1.9.0"</span></span>,
+    "<span class="hljs-attribute">eslint-plugin-import</span>": <span class="hljs-value"><span class="hljs-string">"^2.8.0"</span></span>,
+    "<span class="hljs-attribute">eslint-plugin-node</span>": <span class="hljs-value"><span class="hljs-string">"^6.0.0"</span></span>,
+    "<span class="hljs-attribute">eslint-plugin-prettier</span>": <span class="hljs-value"><span class="hljs-string">"^2.6.0"</span></span>,
+    "<span class="hljs-attribute">eslint-plugin-promise</span>": <span class="hljs-value"><span class="hljs-string">"^3.6.0"</span></span>,
+    "<span class="hljs-attribute">eslint-plugin-standard</span>": <span class="hljs-value"><span class="hljs-string">"^3.0.1"</span></span>,
+    "<span class="hljs-attribute">extract-text-webpack-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^3.0.2"</span></span>,
+    "<span class="hljs-attribute">file-loader</span>": <span class="hljs-value"><span class="hljs-string">"^1.1.6"</span></span>,
+    "<span class="hljs-attribute">hard-source-webpack-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^0.5.18"</span></span>,
+    "<span class="hljs-attribute">html-webpack-inline-chunk-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^1.1.1"</span></span>,
+    "<span class="hljs-attribute">html-webpack-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^2.30.1"</span></span>,
+    "<span class="hljs-attribute">image-webpack-loader</span>": <span class="hljs-value"><span class="hljs-string">"^4.1.0"</span></span>,
+    "<span class="hljs-attribute">node-sass</span>": <span class="hljs-value"><span class="hljs-string">"^4.7.2"</span></span>,
+    "<span class="hljs-attribute">nodemon</span>": <span class="hljs-value"><span class="hljs-string">"^1.15.0"</span></span>,
+    "<span class="hljs-attribute">postcss-cssnext</span>": <span class="hljs-value"><span class="hljs-string">"^3.1.0"</span></span>,
+    "<span class="hljs-attribute">postcss-loader</span>": <span class="hljs-value"><span class="hljs-string">"^2.1.0"</span></span>,
+    "<span class="hljs-attribute">prettier</span>": <span class="hljs-value"><span class="hljs-string">"^1.10.2"</span></span>,
+    "<span class="hljs-attribute">sass-loader</span>": <span class="hljs-value"><span class="hljs-string">"^6.0.6"</span></span>,
+    "<span class="hljs-attribute">style-loader</span>": <span class="hljs-value"><span class="hljs-string">"^0.20.1"</span></span>,
+    "<span class="hljs-attribute">svg-url-loader</span>": <span class="hljs-value"><span class="hljs-string">"^2.3.1"</span></span>,
+    "<span class="hljs-attribute">uglifyjs-webpack-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^1.2.0"</span></span>,
+    "<span class="hljs-attribute">url-loader</span>": <span class="hljs-value"><span class="hljs-string">"^0.6.2"</span></span>,
+    "<span class="hljs-attribute">webpack</span>": <span class="hljs-value"><span class="hljs-string">"^3.11.0"</span></span>,
+    "<span class="hljs-attribute">webpack-bundle-analyzer</span>": <span class="hljs-value"><span class="hljs-string">"^2.10.0"</span></span>,
+    "<span class="hljs-attribute">webpack-dashboard</span>": <span class="hljs-value"><span class="hljs-string">"^1.1.1"</span></span>,
+    "<span class="hljs-attribute">webpack-dev-middleware</span>": <span class="hljs-value"><span class="hljs-string">"^2.0.5"</span></span>,
+    "<span class="hljs-attribute">webpack-dev-server</span>": <span class="hljs-value"><span class="hljs-string">"^2.11.1"</span></span>,
+    "<span class="hljs-attribute">webpack-hot-middleware</span>": <span class="hljs-value"><span class="hljs-string">"^2.21.0"</span></span>,
+    "<span class="hljs-attribute">webpack-manifest-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^1.3.2"</span></span>,
+    "<span class="hljs-attribute">webpack-merge</span>": <span class="hljs-value"><span class="hljs-string">"^4.1.1"</span></span>,
+    "<span class="hljs-attribute">webpack-monitor</span>": <span class="hljs-value"><span class="hljs-string">"^1.0.14"</span></span>,
+    "<span class="hljs-attribute">zopfli-webpack-plugin</span>": <span class="hljs-value"><span class="hljs-string">"^0.1.0"</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">dependencies</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">babel-polyfill</span>": <span class="hljs-value"><span class="hljs-string">"^6.26.0"</span></span>,
+    "<span class="hljs-attribute">express</span>": <span class="hljs-value"><span class="hljs-string">"^4.16.2"</span></span>,
+    "<span class="hljs-attribute">moment</span>": <span class="hljs-value"><span class="hljs-string">"^2.20.1"</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">eslintConfig</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">extends</span>": <span class="hljs-value">[<span class="hljs-string">"standard"</span>, <span class="hljs-string">"prettier"</span>, <span class="hljs-string">"plugin:import/errors"</span>]</span>,
+    "<span class="hljs-attribute">plugins</span>": <span class="hljs-value">[<span class="hljs-string">"prettier"</span>, <span class="hljs-string">"import"</span>]</span>,
+    "<span class="hljs-attribute">parser</span>": <span class="hljs-value"><span class="hljs-string">"babel-eslint"</span></span>,
+    "<span class="hljs-attribute">env</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">browser</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+      "<span class="hljs-attribute">commonjs</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+      "<span class="hljs-attribute">es6</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+      "<span class="hljs-attribute">jest</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+      "<span class="hljs-attribute">node</span>": <span class="hljs-value"><span class="hljs-literal">true</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">rules</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">prettier/prettier</span>": <span class="hljs-value">[
+        <span class="hljs-string">"error"</span>,
+        {
+          "<span class="hljs-attribute">arrowParens</span>": <span class="hljs-value"><span class="hljs-string">"always"</span></span>,
+          "<span class="hljs-attribute">semi</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+          "<span class="hljs-attribute">singleQuote</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+          "<span class="hljs-attribute">trailingComma</span>": <span class="hljs-value"><span class="hljs-string">"es5"</span>
+        </span>}
+      ]</span>,
+      "<span class="hljs-attribute">no-irregular-whitespace</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+    </span>}
+  </span>}
+</span>}</div></div></div></div></body></html>
