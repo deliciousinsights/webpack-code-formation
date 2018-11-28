@@ -1,0 +1,11 @@
+{
+  "name": "webpack-exo-babel-stylus",
+  "private": true,
+  "version": "1.1.0",
+  "description": "Premier exercice autonome de la formation Webpack de Delicious Insights",
+  "author": "Christophe Porteneuve <christophe@delicious-insights.com> (https://delicious-insights.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "lodash-es": "^4.17.11"
+  }
+}
