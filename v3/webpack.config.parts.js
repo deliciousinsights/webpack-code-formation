@@ -145,6 +145,13 @@ exports.concatenateModules = () => ({
   plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
 })
 
+exports.ignoreDynamicRequiresFor = (requestRegExp, contextRegExp) => ({
+  plugins: [new webpack.IgnorePlugin(requestRegExp, contextRegExp)],
+})
+
+exports.ignoreMomentLocales = () =>
+  exports.ignoreDynamicRequiresFor(/^\.\/locale$/, /moment$/)
+
 exports.makeNonProductionCodeStrippable = () => ({
   plugins: [
     new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),

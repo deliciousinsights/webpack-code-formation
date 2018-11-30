@@ -20,6 +20,7 @@ const coreConfig = merge(
   },
   parts.generateSourceMaps(),
   parts.babelize({ include: PATHS.source }),
+  parts.ignoreMomentLocales(),
   parts.lintJS({ include: PATHS.source }),
   parts.copyStatic(PATHS.static),
   parts.loadImages(),

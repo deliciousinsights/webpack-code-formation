@@ -1,3 +1,7 @@
+import moment from 'moment'
+
+import 'moment/locale/fr'
+
 import hackerCase, { secretEmoji as hackerEmoji } from './utils/hacker-case'
 
 import chillingURL from '../images/chilling.jpg'
@@ -5,7 +9,8 @@ import { heroUnit } from './index.scss'
 
 const { hangman, secretEmoji: hangmanEmoji } = require('./utils/hangman')
 
-console.log('hello world')
+moment.locale('fr')
+console.log('hello world', moment().format('LL'))
 console.log(hackerEmoji, hackerCase('hello world'))
 console.log(hangmanEmoji, hangman('hello world'))
 

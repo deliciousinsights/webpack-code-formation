@@ -133,6 +133,15 @@ exports.copyStatic = (...patterns) => {
     plugins: [new CopyPlugin({ patterns })],
   }
 }
+// Optimizations
+// -------------
+
+exports.ignoreDynamicRequiresFor = (resourceRegExp, contextRegExp) => ({
+  plugins: [new webpack.IgnorePlugin({ resourceRegExp, contextRegExp })],
+})
+
+exports.ignoreMomentLocales = () =>
+  exports.ignoreDynamicRequiresFor(/^\.\/locale$/, /moment$/)
 
 // Dev UX
 // ------
