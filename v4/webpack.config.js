@@ -59,7 +59,8 @@ const prodConfig = () =>
     parts.generateSourceMaps({ type: 'source-map' }),
     parts.extractCSS({ modules: true }),
     parts.extractSASS({ modules: true }),
-    parts.minifyAll()
+    parts.minifyAll(),
+    parts.optimizeImages()
   )
 
 module.exports = (env = process.env.NODE_ENV) =>

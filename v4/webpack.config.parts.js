@@ -160,6 +160,24 @@ exports.minifyAll = () => {
   }
 }
 
+exports.optimizeImages = (options = {}) => {
+  options = {
+    optipng: { enabled: false },
+    ...options,
+    mozjpeg: { quality: 75, ...(options.mozjpeg || {}) },
+  }
+  return {
+    module: {
+      rules: [
+        {
+          test: /\.(?:jpe?g|png|gif|webp|svg)$/,
+          use: [{ loader: 'image-webpack-loader', options }],
+        },
+      ],
+    },
+  }
+}
+
 // Dev UX
 // ------
 
