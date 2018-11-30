@@ -58,7 +58,8 @@ const prodConfig = () =>
     { mode: 'production', stats: { optimizationBailout: true } },
     parts.generateSourceMaps({ type: 'source-map' }),
     parts.extractCSS({ modules: true }),
-    parts.extractSASS({ modules: true })
+    parts.extractSASS({ modules: true }),
+    parts.minifyAll()
   )
 
 module.exports = (env = process.env.NODE_ENV) =>

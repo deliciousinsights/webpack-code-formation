@@ -158,6 +158,18 @@ exports.makeNonProductionCodeStrippable = () => ({
   ],
 })
 
+exports.minifyAll = (options = {}) => {
+  const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+  options = { parallel: true, sourceMap: true, ...options }
+
+  return {
+    plugins: [
+      new webpack.LoaderOptionsPlugin({ minimize: true }),
+      new UglifyJSPlugin(options),
+    ],
+  }
+}
+
 // Dev UX
 // ------
 

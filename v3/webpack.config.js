@@ -55,7 +55,8 @@ const prodConfig = () =>
     parts.makeNonProductionCodeStrippable(),
     parts.concatenateModules(),
     parts.extractCSS({ modules: true }),
-    parts.extractSASS({ modules: true })
+    parts.extractSASS({ modules: true }),
+    parts.minifyAll()
   )
 
 module.exports = (env = process.env.NODE_ENV) =>

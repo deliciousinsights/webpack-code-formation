@@ -143,6 +143,23 @@ exports.ignoreDynamicRequiresFor = (resourceRegExp, contextRegExp) => ({
 exports.ignoreMomentLocales = () =>
   exports.ignoreDynamicRequiresFor(/^\.\/locale$/, /moment$/)
 
+exports.minifyAll = () => {
+  const TerserPlugin = require('terser-webpack-plugin')
+  const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+  return {
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: true,
+        }),
+        new OptimizeCSSAssetsPlugin({}),
+      ],
+    },
+  }
+}
+
 // Dev UX
 // ------
 
