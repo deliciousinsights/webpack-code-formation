@@ -138,6 +138,18 @@ exports.copyStatic = (...sourceDirs) => {
     plugins: [new CopyPlugin(sourceDirs)],
   }
 }
+// Optimizations
+// -------------
+
+exports.concatenateModules = () => ({
+  plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
+})
+
+exports.makeNonProductionCodeStrippable = () => ({
+  plugins: [
+    new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
+  ],
+})
 
 // Dev UX
 // ------

@@ -51,6 +51,8 @@ const prodConfig = () =>
   merge.smart(
     coreConfig,
     parts.generateSourceMaps({ type: 'source-map' }),
+    parts.makeNonProductionCodeStrippable(),
+    parts.concatenateModules(),
     parts.extractCSS({ modules: true }),
     parts.extractSASS({ modules: true })
   )
