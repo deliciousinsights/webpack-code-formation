@@ -188,6 +188,28 @@ exports.optimizeImages = (options = {}) => {
   }
 }
 
+exports.compressFiles = (options = {}) => {
+  const CompressionPlugin = require('compression-webpack-plugin')
+  const { gzip: algorithm } = require('@gfx/zopfli')
+  return {
+    plugins: [
+      new CompressionPlugin(
+        {
+          test: /\.(?:html|jsx?|css|svg)$/,
+          ...options,
+          algorithm,
+        },
+        {
+          test: /\.png$/,
+          deleteOriginalAssets: true,
+          ...options,
+          algorithm,
+        }
+      ),
+    ],
+  }
+}
+
 // Dev UX
 // ------
 

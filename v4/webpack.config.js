@@ -60,7 +60,8 @@ const prodConfig = () =>
     parts.extractCSS({ modules: true }),
     parts.extractSASS({ modules: true }),
     parts.minifyAll(),
-    parts.optimizeImages()
+    parts.optimizeImages(),
+    parts.compressFiles()
   )
 
 module.exports = (env = process.env.NODE_ENV) =>

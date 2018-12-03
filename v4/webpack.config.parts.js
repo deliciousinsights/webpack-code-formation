@@ -166,6 +166,7 @@ exports.optimizeImages = (options = {}) => {
     ...options,
     mozjpeg: { quality: 75, ...(options.mozjpeg || {}) },
   }
+
   return {
     module: {
       rules: [
@@ -175,6 +176,28 @@ exports.optimizeImages = (options = {}) => {
         },
       ],
     },
+  }
+}
+
+exports.compressFiles = (options = {}) => {
+  const CompressionPlugin = require('compression-webpack-plugin')
+  const { gzip: algorithm } = require('@gfx/zopfli')
+  return {
+    plugins: [
+      new CompressionPlugin({
+        compressionOptions: { numiterations: 15 },
+        test: /\.(?:html|jsx?|css|svg)$/,
+        ...options,
+        algorithm,
+      }),
+      new CompressionPlugin({
+        compressionOptions: { numiterations: 15 },
+        test: /\.png$/,
+        deleteOriginalAssets: true,
+        ...options,
+        algorithm,
+      }),
+    ],
   }
 }
 
