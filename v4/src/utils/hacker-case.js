@@ -13,3 +13,14 @@ export function hackerCase(text) {
 // module.exports = hackerCase
 // hackerCase.secretEmoji = …
 export default hackerCase
+
+// Unused export, will be tree-shaken
+export function uselessCruft() {
+  console.log('THIS IS USELESS CRUFT')
+  uselessSubCruft()
+}
+
+// Unused because caller code is an unused export that’ll be tree-shaken
+function uselessSubCruft() {
+  console.log('THIS IS USELESS SUBCRUFT')
+}

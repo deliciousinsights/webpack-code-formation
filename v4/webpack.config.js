@@ -54,7 +54,7 @@ const devConfig = () =>
 const prodConfig = () =>
   merge.smart(
     coreConfig,
-    { mode: 'production' },
+    { mode: 'production', stats: { optimizationBailout: true } },
     parts.generateSourceMaps({ type: 'source-map' }),
     parts.extractCSS({ modules: true }),
     parts.extractSASS({ modules: true })
